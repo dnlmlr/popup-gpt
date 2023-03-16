@@ -1,0 +1,19 @@
+[package]
+name = "popup-gpt"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+lto = "thin"
+strip = true
+
+[dependencies]
+anyhow = "1.0.69"
+dirs = "4.0.0"
+eframe = "0.21.3"
+egui = "0.21.0"
+serde = { version = "1.0.156", features = ["derive"] }
+serde_json = "1.0.94"
+ureq = { version = "2.6.2", features = ["json"] }
+winapi = { version = "0.3.9", features = ["winuser", "wincon", "windef"] }
+windows-hotkeys = "0.1.1"
