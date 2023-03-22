@@ -1,4 +1,4 @@
-// This disables console output. remove this for debugging until another logging method is 
+// This disables console output. remove this for debugging until another logging method is
 // implemented
 #![windows_subsystem = "windows"]
 
@@ -219,10 +219,9 @@ impl eframe::App for App {
                     let chatgpt = Arc::clone(&self.chatgpt);
                     let (tx_stream, rx_stream) = channel();
                     let sender = self.com.0.clone();
+                    let ctx = ctx.clone();
 
                     std::thread::spawn(move || {
-                        // chatgpt.write().unwrap().clear_conversation();
-
                         let _resp = chatgpt
                             .write()
                             .unwrap()
@@ -237,6 +236,7 @@ impl eframe::App for App {
                             sender
                                 .send(GUIMsg::PartialCompletionResponse(resp))
                                 .unwrap();
+                            ctx.request_repaint();
                         }
                     });
                 }
@@ -248,9 +248,13 @@ impl eframe::App for App {
                 // Wait for hotkey
                 self.hotkey_mgr.handle_hotkey();
 
-                self.show_window(true);
-
                 self.focus_input = true;
+
+                // Start a new conversation
+                self.prompt.clear();
+                self.chatgpt.write().unwrap().clear_conversation();
+
+                self.show_window(true);
             }
 
             if inp.modifiers.alt {
